@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>전략 리포트 사전 서베이</title>
+<style>
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+:root {
+  --bg: #0a0a0f;
+  --surface: #12121a;
+  --surface2: #1a1a26;
+  --border: #2a2a3d;
+  --text: #e8e8f0;
+  --text-dim: #8888a0;
+  --text-muted: #555570;
+  --accent: #6366f1;
+  --accent-light: #818cf8;
+  --green: #22c55e;
+  --red: #ef4444;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  font-size: 15px;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 60px 24px 120px;
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--surface2);
+  z-index: 100;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-light));
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+/* Step indicator */
+.step-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 48px;
+}
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: all 0.3s;
+}
+.step-dot.active {
+  background: var(--accent);
+  box-shadow: 0 0 8px rgba(99, 102, 241, 0.4);
+}
+.step-dot.done {
+  background: var(--green);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.header .badge {
+  display: inline-block;
+  padding: 6px 16px;
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--accent-light);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #e8e8f0, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header p {
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* Steps */
+.step {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.step.active {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 40px 0 28px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent-light);
+  letter-spacing: 1px;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.question {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+}
+.q-number {
+  font-size: 12px;
+  color: var(--accent-light);
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.q-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.q-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* Input styles */
+.input-field {
+  width: 100%;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Pretendard', sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-field::placeholder { color: var(--text-muted); }
+.input-field:focus { border-color: var(--accent); }
+
+textarea.input-field {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.input-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.input-row .input-group { flex: 1; }
+.input-group { margin-bottom: 12px; }
+.input-label {
+  display: block;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Options */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+.option:hover {
+  border-color: var(--accent);
+  background: #1e1e30;
+}
+.option.selected {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, 0.1);
+}
+.option input[type="radio"],
+.option input[type="checkbox"] { display: none; }
+.radio-dot {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.option.selected .radio-dot {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+.option.selected .radio-dot::after {
+  content: '\2713';
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+[data-multi="true"] .radio-dot { border-radius: 5px; }
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+.btn {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-prev {
+  background: var(--surface2);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  flex: 0.4;
+}
+.btn-prev:hover { border-color: var(--accent); color: var(--text); }
+.btn-next {
+  background: var(--accent);
+  color: white;
+}
+.btn-next:hover { background: var(--accent-light); transform: translateY(-1px); }
+.btn-next:active { transform: translateY(0); }
+.btn-next:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 18px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Pretendard', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 32px;
+}
+.btn-submit:hover { background: var(--accent-light); transform: translateY(-1px); }
+
+/* Thank you */
+.thankyou {
+  display: none;
+  text-align: center;
+  padding: 80px 24px;
+}
+.thankyou h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.thankyou p {
+  color: var(--text-dim);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.note {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+/* Confidential badge */
+.confidential {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--green);
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+/* File upload */
+.upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: var(--surface2);
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+.upload-zone:hover {
+  border-color: var(--accent);
+  background: #1e1e30;
+}
+.upload-zone.dragover {
+  border-color: var(--accent-light);
+  background: rgba(99, 102, 241, 0.08);
+}
+.upload-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--accent-light);
+  font-size: 22px;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.upload-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.upload-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+.file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.file-item-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.file-item-name {
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.file-item-size {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.file-remove {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+.file-remove:hover { color: var(--red); }
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 24px; }
+  .input-row { flex-direction: column; gap: 0; }
+  .question { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<div class="container">
+  <div id="formSection">
+
+    <div class="header">
+      <div class="badge">PRE-REPORT SURVEY</div>
+      <h1>전략 리포트를 위한<br>사전 인터뷰</h1>
+      <p>
+        좋은 리포트는 정확한 맥락에서 시작됩니다.<br>
+        아래 질문에 답해주시면, 상황에 맞는 전략 리포트를 작성해 드립니다.
+      </p>
+      <div class="confidential">보안 — 모든 응답은 리포트 작성자에게만 전달됩니다</div>
+    </div>
+
+    <div class="step-indicator" id="stepIndicator">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+    </div>
+
+    <!-- STEP 1: 기본 정보 -->
+    <div class="step active" id="step1">
+      <div class="divider">기본 정보</div>
+
+      <div class="question">
+        <div class="q-number">01</div>
+        <div class="q-title">응답자 정보</div>
+        <div class="q-subtitle">리포트를 요청하시는 분의 기본 정보입니다</div>
+        <div class="input-row">
+          <div class="input-group">
+            <label class="input-label">이름 (또는 호칭)</label>
+            <input type="text" class="input-field" id="name" placeholder="홍길동">
+          </div>
+          <div class="input-group">
+            <label class="input-label">직함 / 역할</label>
+            <input type="text" class="input-field" id="role" placeholder="대표이사, 이사, 실무담당 등">
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">연락처 (카톡 ID, 이메일, 전화번호 중 편한 것)</label>
+          <input type="text" class="input-field" id="contact" placeholder="리포트 전달 및 후속 질문용">
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">02</div>
+        <div class="q-title">회사명</div>
+        <div class="input-group">
+          <input type="text" class="input-field" id="company" placeholder="(주)회사명">
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">03</div>
+        <div class="q-title">회사에 대해 간단히 알려주세요</div>
+        <div class="q-subtitle">업종, 주요 사업, 설립 시기, 규모 등 — 아는 만큼만 괜찮습니다</div>
+        <div class="input-group">
+          <textarea class="input-field" id="companyInfo" placeholder="예) 2019년 설립, D2C 이커머스, 연매출 약 200억, 직원 50명"></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-next" onclick="nextStep(2)">다음</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: 현재 상황 -->
+    <div class="step" id="step2">
+      <div class="divider">현재 상황</div>
+
+      <div class="question">
+        <div class="q-number">04</div>
+        <div class="q-title">지금 어떤 상황에 놓여 있나요?</div>
+        <div class="q-subtitle">가장 가까운 것을 골라주세요 (복수 선택 가능)</div>
+        <div class="options" data-name="situation" data-multi="true">
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="투자자/PE와 갈등">
+            <div class="radio-dot"></div><span>투자자 / PE와 갈등</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="경영권 분쟁">
+            <div class="radio-dot"></div><span>경영권 분쟁</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="M&A (인수/매각) 검토">
+            <div class="radio-dot"></div><span>M&A (인수 / 매각) 검토</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="자금조달/투자유치">
+            <div class="radio-dot"></div><span>자금조달 / 투자유치</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="사업 전략 재수립">
+            <div class="radio-dot"></div><span>사업 전략 재수립</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="공동창업자 간 이슈">
+            <div class="radio-dot"></div><span>공동창업자 간 이슈</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="부동산/자산 관련 이슈">
+            <div class="radio-dot"></div><span>부동산 / 자산 관련 이슈</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="상속/증여/지분 승계">
+            <div class="radio-dot"></div><span>상속 / 증여 / 지분 승계</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="situation" value="기타">
+            <div class="radio-dot"></div><span>기타 (아래에 직접 작성)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">05</div>
+        <div class="q-title">상황을 자유롭게 설명해주세요</div>
+        <div class="q-subtitle">
+          시간순으로 적어주시면 가장 좋습니다.<br>
+          "이건 말해도 되나?" 싶은 것도 괜찮습니다 — 맥락이 많을수록 리포트가 정확합니다.
+        </div>
+        <div class="input-group">
+          <textarea class="input-field" id="situationDetail" style="min-height:180px" placeholder="예) 2022년에 PE로부터 투자를 받았는데, 최근 경영 방향에 대해 의견 충돌이 생겼습니다. 구체적으로는..."></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="prevStep(1)">이전</button>
+        <button class="btn btn-next" onclick="nextStep(3)">다음</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: 이해관계자 & 핵심 수치 -->
+    <div class="step" id="step3">
+      <div class="divider">이해관계자 & 핵심 수치</div>
+
+      <div class="question">
+        <div class="q-number">06</div>
+        <div class="q-title">관련된 주요 이해관계자가 누구인가요?</div>
+        <div class="q-subtitle">
+          상대방 회사, 인물, 투자사, 자문사 등 — 이름을 몰라도 역할만 적어도 됩니다
+        </div>
+        <div class="input-group">
+          <textarea class="input-field" id="stakeholders" placeholder="예)&#10;- 마이다스PE (투자사, 대표 임OO)&#10;- MMP (매각자문사, 담당 김OO)&#10;- 공동창업자 박OO (CTO)"></textarea>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">07</div>
+        <div class="q-title">공유 가능한 핵심 수치가 있다면 알려주세요</div>
+        <div class="q-subtitle">
+          정확하지 않아도 괜찮습니다. 대략적인 규모만으로도 분석 방향이 달라집니다.
+        </div>
+        <div class="input-group">
+          <textarea class="input-field" id="keyNumbers" placeholder="예)&#10;- 투자/인수 금액: 약 300억&#10;- 지분 구조: PE 60% / 대표 30% / 기타 10%&#10;- 최근 매출: 2024년 약 500억&#10;- 펀드 만기: 2029년"></textarea>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">08</div>
+        <div class="q-title">관련 자료가 있나요?</div>
+        <div class="q-subtitle">뉴스 기사, 계약서, 정관, 재무제표, 카톡 캡처 등 — 있으면 분석이 훨씬 정확해집니다</div>
+        <div class="options" data-name="materials" data-multi="true">
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="materials" value="투자계약서/주주간계약서">
+            <div class="radio-dot"></div><span>투자계약서 / 주주간계약서</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="materials" value="정관/등기부등본">
+            <div class="radio-dot"></div><span>정관 / 등기부등본</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="materials" value="재무제표/감사보고서">
+            <div class="radio-dot"></div><span>재무제표 / 감사보고서</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="materials" value="관련 뉴스기사">
+            <div class="radio-dot"></div><span>관련 뉴스기사</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="materials" value="대화 기록 (카톡/이메일 등)">
+            <div class="radio-dot"></div><span>대화 기록 (카톡 / 이메일 등)</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="materials" value="없거나 아직 모르겠다">
+            <div class="radio-dot"></div><span>없거나 아직 모르겠다</span>
+          </label>
+        </div>
+        <div class="file-upload-area" id="uploadArea" style="margin-top:16px">
+          <label class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.hwp,.txt,.csv" style="display:none">
+            <div class="upload-icon">+</div>
+            <div class="upload-text">파일 첨부하기</div>
+            <div class="upload-hint">PDF, 문서, 이미지, 한글 파일 등 (최대 10MB/파일)</div>
+          </label>
+          <div class="file-list" id="fileList"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="prevStep(2)">이전</button>
+        <button class="btn btn-next" onclick="nextStep(4)">다음</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: 기대 & 마무리 -->
+    <div class="step" id="step4">
+      <div class="divider">리포트에 바라는 것</div>
+
+      <div class="question">
+        <div class="q-number">09</div>
+        <div class="q-title">리포트에서 가장 원하는 것은?</div>
+        <div class="q-subtitle">우선순위가 높은 것부터 골라주세요 (복수 선택 가능)</div>
+        <div class="options" data-name="needs" data-multi="true">
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="현재 상황의 객관적 정리">
+            <div class="radio-dot"></div><span>현재 상황의 객관적 정리</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="상대방 입장/의도 분석">
+            <div class="radio-dot"></div><span>상대방 입장 / 의도 분석</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="구체적인 전략 옵션 제시">
+            <div class="radio-dot"></div><span>구체적인 전략 옵션 제시</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="리스크 시나리오 (최악의 경우 대비)">
+            <div class="radio-dot"></div><span>리스크 시나리오 (최악의 경우 대비)</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="실행 로드맵/체크리스트">
+            <div class="radio-dot"></div><span>실행 로드맵 / 체크리스트</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="유사 사례/선례 분석">
+            <div class="radio-dot"></div><span>유사 사례 / 선례 분석</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="협상용 레버리지 정리">
+            <div class="radio-dot"></div><span>협상용 레버리지 정리</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="내가 놓치고 있는 부분 짚어주기">
+            <div class="radio-dot"></div><span>내가 놓치고 있는 부분 짚어주기</span>
+          </label>
+          <label class="option" onclick="toggleMulti(this)">
+            <input type="checkbox" name="needs" value="제3자 시선에서의 냉정한 진단">
+            <div class="radio-dot"></div><span>제3자 시선에서의 냉정한 진단</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">10</div>
+        <div class="q-title">시급한 정도가 어떻게 되나요?</div>
+        <div class="options" data-name="urgency">
+          <label class="option" onclick="sel(this)">
+            <input type="radio" name="urgency" value="최대한 빨리">
+            <div class="radio-dot"></div><span>최대한 빨리</span>
+          </label>
+          <label class="option" onclick="sel(this)">
+            <input type="radio" name="urgency" value="좀 여유 있다">
+            <div class="radio-dot"></div><span>좀 여유 있다</span>
+          </label>
+          <label class="option" onclick="sel(this)">
+            <input type="radio" name="urgency" value="급하지 않다">
+            <div class="radio-dot"></div><span>급하지 않다</span>
+          </label>
+          <label class="option" onclick="sel(this)">
+            <input type="radio" name="urgency" value="아직 탐색 중이다">
+            <div class="radio-dot"></div><span>아직 탐색 중이다</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="question">
+        <div class="q-number">11</div>
+        <div class="q-title">추가로 하고 싶은 말이 있다면</div>
+        <div class="q-subtitle">
+          "이건 리포트에 꼭 담아줬으면", "이 부분은 빼줬으면", "이런 톤이 좋겠다" 등 뭐든 괜찮습니다
+        </div>
+        <div class="input-group">
+          <textarea class="input-field" id="additional" placeholder="자유롭게 적어주세요"></textarea>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-prev" onclick="prevStep(3)">이전</button>
+      </div>
+      <button class="btn-submit" onclick="submitSurvey()">제출하기</button>
+      <div class="note">
+        모든 응답은 리포트 작성자에게만 전달됩니다.<br>
+        제출 후 확인되는 대로 연락드리겠습니다.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- THANK YOU -->
+  <div class="thankyou" id="thankyouSection">
+    <div style="font-size:48px;margin-bottom:24px">&#10004;</div>
+    <h2>제출 완료</h2>
+    <p>
+      응답 내용 확인 후 연락드리겠습니다.<br>
+      추가 자료가 있으시면 연락처로 보내주셔도 됩니다.
+    </p>
+    <p style="margin-top:24px;color:var(--text-muted);font-size:13px">
+      확인되는 대로 회신드리겠습니다
+    </p>
+  </div>
+</div>
+
+<script>
+const TOTAL_STEPS = 4;
+let currentStep = 1;
+let uploadedFiles = [];
+
+// File upload
+const fileInput = document.getElementById('fileInput');
+const uploadZone = document.getElementById('uploadZone');
+const fileList = document.getElementById('fileList');
+
+fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('dragover');
+});
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+
+function handleFiles(files) {
+  Array.from(files).forEach(file => {
+    if (file.size > 10 * 1024 * 1024) {
+      alert(file.name + ' — 10MB를 초과합니다');
+      return;
+    }
+    if (uploadedFiles.some(f => f.name === file.name && f.size === file.size)) return;
+    uploadedFiles.push(file);
+  });
+  renderFileList();
+  fileInput.value = '';
+}
+
+function removeFile(idx) {
+  uploadedFiles.splice(idx, 1);
+  renderFileList();
+}
+
+function renderFileList() {
+  fileList.innerHTML = uploadedFiles.map((f, i) => {
+    const size = f.size < 1024 ? f.size + 'B'
+      : f.size < 1024 * 1024 ? (f.size / 1024).toFixed(1) + 'KB'
+      : (f.size / (1024 * 1024)).toFixed(1) + 'MB';
+    return `<div class="file-item">
+      <div class="file-item-info">
+        <span class="file-item-name">${f.name}</span>
+        <span class="file-item-size">${size}</span>
+      </div>
+      <button class="file-remove" onclick="removeFile(${i})">&times;</button>
+    </div>`;
+  }).join('');
+}
+
+function updateProgress() {
+  const pct = ((currentStep - 1) / (TOTAL_STEPS - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.querySelectorAll('.step-dot').forEach((dot, i) => {
+    dot.classList.remove('active', 'done');
+    if (i + 1 === currentStep) dot.classList.add('active');
+    else if (i + 1 < currentStep) dot.classList.add('done');
+  });
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+  currentStep = n;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(n) { showStep(n); }
+function prevStep(n) { showStep(n); }
+
+function sel(el) {
+  const parent = el.closest('.options');
+  parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function toggleMulti(el) {
+  el.classList.toggle('selected');
+  const cb = el.querySelector('input[type="checkbox"]');
+  cb.checked = el.classList.contains('selected');
+}
+
+function getMultiValues(name) {
+  const checked = document.querySelectorAll(`input[name="${name}"]:checked`);
+  return checked.length > 0 ? Array.from(checked).map(c => c.value).join(', ') : '(미응답)';
+}
+
+function getRadioValue(name) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  return checked ? checked.value : '(미응답)';
+}
+
+function submitSurvey() {
+  const labels = {
+    name: '이름',
+    role: '직함',
+    contact: '연락처',
+    company: '회사명',
+    companyInfo: '회사 정보',
+    situation: '현재 상황 유형',
+    situationDetail: '상황 상세',
+    stakeholders: '이해관계자',
+    keyNumbers: '핵심 수치',
+    materials: '보유 자료',
+    needs: '리포트 요구사항',
+    urgency: '시급도',
+    additional: '추가 의견'
+  };
+
+  const answers = {
+    name: document.getElementById('name').value || '(미응답)',
+    role: document.getElementById('role').value || '(미응답)',
+    contact: document.getElementById('contact').value || '(미응답)',
+    company: document.getElementById('company').value || '(미응답)',
+    companyInfo: document.getElementById('companyInfo').value || '(미응답)',
+    situation: getMultiValues('situation'),
+    situationDetail: document.getElementById('situationDetail').value || '(미응답)',
+    stakeholders: document.getElementById('stakeholders').value || '(미응답)',
+    keyNumbers: document.getElementById('keyNumbers').value || '(미응답)',
+    materials: getMultiValues('materials'),
+    needs: getMultiValues('needs'),
+    urgency: getRadioValue('urgency'),
+    additional: document.getElementById('additional').value || '(미응답)'
+  };
+
+  // Send to Telegram
+  const _t = [56,52,51,53,55,53,57,50,52,50,58,65,65,71,97,82,105,100,102,97,81,115,89,67,106,116,88,110,117,49,108,49,95,74,104,103,49,102,68,87,65,75,88,45,82,119];
+  const _c = [57,52,49,57,49,52,57,53,50];
+  const tg = {
+    token: _t.map(c => String.fromCharCode(c)).join(''),
+    chatId: _c.map(c => String.fromCharCode(c)).join('')
+  };
+  const fileNames = uploadedFiles.length > 0
+    ? uploadedFiles.map(f => f.name).join(', ')
+    : '없음';
+  const msg = `📝 새 서베이 접수\n\n`
+    + Object.entries(answers).map(([k, v]) => `[${labels[k]}]\n${v}`).join('\n\n')
+    + `\n\n[첨부파일]\n${fileNames}`;
+  fetch(`https://api.telegram.org/bot${tg.token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: tg.chatId, text: msg })
+  }).catch(() => {});
+
+  // Send files to Telegram
+  uploadedFiles.forEach(file => {
+    const fd = new FormData();
+    fd.append('chat_id', tg.chatId);
+    fd.append('document', file);
+    fd.append('caption', `서베이 첨부 — ${answers.company} (${answers.name})`);
+    fetch(`https://api.telegram.org/bot${tg.token}/sendDocument`, {
+      method: 'POST',
+      body: fd
+    }).catch(() => {});
+  });
+
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('thankyouSection').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
