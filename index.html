@@ -2,7 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>전략 리포트 사전 서베이</title>
 <style>
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
@@ -30,6 +32,9 @@ body {
   line-height: 1.7;
   font-size: 15px;
   min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-text-size-adjust: 100%;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
 }
 
 .container {
@@ -433,10 +438,60 @@ textarea.input-field {
 }
 .file-remove:hover { color: var(--red); }
 
-@media (max-width: 480px) {
-  .header h1 { font-size: 24px; }
+/* Mobile optimization */
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .container { padding: 40px 16px 100px; }
+  .header { margin-bottom: 32px; }
+  .header h1 { font-size: 22px; }
+  .header p { font-size: 14px; }
+  .header .badge { font-size: 11px; padding: 5px 12px; }
+  .confidential { font-size: 11px; padding: 6px 10px; }
+  .step-indicator { margin-bottom: 32px; }
+  .divider { margin: 28px 0 20px; font-size: 12px; }
+  .question { padding: 20px 16px; margin-bottom: 14px; border-radius: 12px; }
+  .q-number { font-size: 11px; }
+  .q-title { font-size: 15px; }
+  .q-subtitle { font-size: 12px; margin-bottom: 12px; }
   .input-row { flex-direction: column; gap: 0; }
-  .question { padding: 20px; }
+  .input-field { padding: 12px 14px; font-size: 14px; border-radius: 8px; }
+  textarea.input-field { min-height: 100px; }
+  .input-label { font-size: 12px; }
+  .option { padding: 12px 14px; font-size: 13px; gap: 10px; border-radius: 8px; }
+  .radio-dot { width: 18px; height: 18px; }
+  .option.selected .radio-dot::after { font-size: 11px; }
+  .btn-row { margin-top: 24px; }
+  .btn { padding: 14px; font-size: 14px; border-radius: 10px; }
+  .btn-submit { padding: 16px; font-size: 15px; margin-top: 24px; border-radius: 10px; }
+  .upload-zone { padding: 20px; }
+  .upload-icon { width: 36px; height: 36px; font-size: 20px; }
+  .upload-text { font-size: 13px; }
+  .upload-hint { font-size: 11px; }
+  .file-item { padding: 8px 12px; font-size: 12px; }
+  .thankyou { padding: 60px 16px; }
+  .thankyou h2 { font-size: 20px; }
+  .thankyou p { font-size: 14px; }
+  .note { font-size: 11px; }
+}
+
+@media (max-width: 360px) {
+  .container { padding: 32px 12px 80px; }
+  .header h1 { font-size: 20px; }
+  .question { padding: 16px 14px; }
+  .option { padding: 11px 12px; font-size: 12px; }
+  .btn { padding: 13px; font-size: 13px; }
+}
+
+/* Prevent iOS zoom on input focus */
+@media (max-width: 640px) {
+  input[type="text"], textarea, select { font-size: 16px !important; }
+}
+
+/* Touch-friendly tap targets */
+@media (hover: none) and (pointer: coarse) {
+  .option { min-height: 48px; }
+  .btn, .btn-submit { min-height: 48px; }
+  .file-remove { padding: 8px; font-size: 20px; }
 }
 </style>
 </head>
