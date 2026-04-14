@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>임용균 전략 리포트 — 몬스터앤파트너스 · 위너스앤파트너스</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+  :root {
+    --bs-body-font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+  body { background: #f4f6f9; color: #1a1a2e; }
+  .report-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #fff;
+    padding: 3rem 0 2rem;
+    border-bottom: 4px solid #3b82f6;
+  }
+  .report-header h1 { font-weight: 800; font-size: 1.8rem; letter-spacing: -0.02em; }
+  .report-header .meta-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    margin-right: 8px;
+    margin-top: 8px;
+  }
+  .disclaimer-bar {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    color: #92400e;
+  }
+
+  .part-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+  .part-card-header {
+    background: #0f172a;
+    color: #fff;
+    padding: 14px 24px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .part-card-header .badge-num {
+    background: #3b82f6;
+    border-radius: 6px;
+    padding: 2px 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .part-card-header .collapse-icon {
+    margin-left: auto;
+    transition: transform 0.2s;
+  }
+  .part-card-header.collapsed .collapse-icon {
+    transform: rotate(-90deg);
+  }
+  .part-card-body { padding: 24px; }
+
+  .sub-section { margin-bottom: 1.5rem; }
+  .sub-section h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1e293b;
+    border-left: 3px solid #3b82f6;
+    padding-left: 12px;
+    margin-bottom: 12px;
+  }
+
+  .table { font-size: 0.88rem; }
+  .table thead th {
+    background: #f1f5f9;
+    font-weight: 700;
+    border-bottom: 2px solid #cbd5e1;
+    white-space: nowrap;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: #475569;
+  }
+  .table td { vertical-align: top; }
+
+  .tag-verified { color: #16a34a; font-weight: 600; }
+  .tag-caution { color: #d97706; font-weight: 600; }
+  .tag-unverified { color: #dc2626; font-weight: 600; }
+
+  pre.diagram {
+    background: #0f172a;
+    color: #94a3b8;
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+  pre.diagram .hl { color: #38bdf8; font-weight: 600; }
+  pre.diagram .warn { color: #fbbf24; }
+
+  .conclusion-box {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    border: 1px solid #93c5fd;
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    font-weight: 500;
+    color: #1e3a5f;
+  }
+
+  .priority-red { background: #fef2f2; border-left: 3px solid #ef4444; }
+  .priority-yellow { background: #fefce8; border-left: 3px solid #eab308; }
+  .priority-green { background: #f0fdf4; border-left: 3px solid #22c55e; }
+  .priority-item { padding: 10px 16px; margin-bottom: 6px; border-radius: 0 6px 6px 0; font-size: 0.88rem; }
+
+  .risk-high { color: #dc2626; font-weight: 700; }
+  .risk-mid { color: #d97706; font-weight: 700; }
+  .risk-low { color: #16a34a; font-weight: 700; }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.88rem;
+  }
+  .checklist-item i { color: #16a34a; margin-top: 2px; }
+
+  .finding-card {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .finding-card.red { background: #fef2f2; border: 1px solid #fecaca; }
+  .finding-card.amber { background: #fffbeb; border: 1px solid #fde68a; }
+  .finding-card.blue { background: #eff6ff; border: 1px solid #bfdbfe; }
+
+  .toc-sidebar {
+    position: sticky;
+    top: 20px;
+    font-size: 0.82rem;
+  }
+  .toc-sidebar a {
+    display: block;
+    padding: 5px 12px;
+    color: #64748b;
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    transition: all 0.15s;
+  }
+  .toc-sidebar a:hover, .toc-sidebar a.active {
+    color: #1e293b;
+    border-left-color: #3b82f6;
+    background: #f1f5f9;
+  }
+
+  .stamp {
+    display: inline-block;
+    border: 2px solid #94a3b8;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+  }
+  .stamp.confidential { border-color: #ef4444; color: #ef4444; }
+
+  @media (max-width: 991px) {
+    .toc-col { display: none; }
+  }
+  @media print {
+    .toc-col { display: none; }
+    .part-card { break-inside: avoid; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="report-header">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-start">
+      <div>
+        <h1>임용균 &times; (주)몬스터앤파트너스 &middot; (주)위너스앤파트너스</h1>
+        <p class="mb-2 opacity-75" style="font-size:1.05rem;">전략 리포트</p>
+        <span class="meta-badge">작성일 2026.04.14</span>
+        <span class="meta-badge"><span class="tag-verified">&#10003;</span> 확인된 팩트</span>
+        <span class="meta-badge"><span class="tag-caution">&#9888;</span> 정황/추정</span>
+        <span class="meta-badge"><span class="tag-unverified">&#10007;</span> 미확인</span>
+      </div>
+      <span class="stamp confidential d-none d-md-inline-block">Confidential</span>
+    </div>
+  </div>
+</div>
+<div class="disclaimer-bar">
+  <div class="container">
+    <i class="bi bi-exclamation-triangle-fill me-1"></i>
+    본 문서는 법률 자문이 아니라 <strong>전략적 쟁점 정리 문서</strong>입니다. 계약 체결, 소송, 형사 고소 등 법적 효과 발생 행위 전에는 관련 전문가의 최종 검토가 필요합니다.
+  </div>
+</div>
+
+<div class="container py-4">
+<div class="row">
+
+<!-- TOC SIDEBAR -->
+<div class="col-lg-3 toc-col no-print">
+  <nav class="toc-sidebar">
+    <p class="fw-bold text-uppercase text-muted mb-2" style="font-size:0.72rem; letter-spacing:0.08em;">목차</p>
+    <a href="#part0">PART 0 &mdash; 60초 브리핑</a>
+    <a href="#part1">PART 1 &mdash; 팩트 검증</a>
+    <a href="#part2">PART 2 &mdash; 법률/계약</a>
+    <a href="#part3">PART 3 &mdash; 재무</a>
+    <a href="#part4">PART 4 &mdash; 시간</a>
+    <a href="#part5">PART 5 &mdash; 게임이론</a>
+    <a href="#part6">PART 6 &mdash; 외부환경</a>
+    <a href="#part7">PART 7 &mdash; 심리/관계</a>
+    <a href="#part8">PART 8 &mdash; BATNA</a>
+    <a href="#part9">PART 9 &mdash; 레버리지</a>
+    <a href="#part10">PART 10 &mdash; 종합 전략</a>
+    <a href="#appendix">부록</a>
+  </nav>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="col-lg-9">
+
+<!-- ==================== PART 0 ==================== -->
+<div class="part-card" id="part0">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part0body">
+    <span class="badge-num">0</span> 60초 브리핑
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part0body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>0-1. 한 문장 결론</h4>
+        <div class="conclusion-box">
+          현재 판의 본질은 <strong>"병원이 잘 안 되는 문제"</strong>가 아니라
+          <strong>"돈은 벌고 있지만 고객(임용균)에게 현금이 돌아오지 않는 구조"</strong>이다.<br>
+          따라서 고객은 <strong>(1) 몬스터앤파트너스의 수익 회수 구조를 먼저 확보</strong>하고,
+          <strong>(2) 위너스앤파트너스는 자산 매각 &rarr; 채무 청산 &rarr; 폐업을 최단 경로로 실행</strong>해야 한다.
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>0-2. 이해관계자 맵</h4>
+        <pre class="diagram">                    <span class="hl">임용균 (고객)</span>
+                   /              \
+          <span class="warn">50% 지분</span>                <span class="warn">100% 지분</span>
+              |                       |
+    ┌─────────────────┐    ┌──────────────────┐
+    │ (주)몬스터앤파트너스 │    │ (주)위너스앤파트너스 │
+    │  병의원 MSO       │    │  임대업/폐업 준비   │
+    └────────┬────────┘    └────────┬─────────┘
+             │                      │
+        <span class="warn">50% 지분</span>                잔존 자산
+             │                      │
+      ┌──────────┐         ┌────────────────┐
+      │ 박희선 원장 │         │ 옥수동 건물 27→33억│
+      │ (대표원장)  │         │ 차량 8대 (장기)    │
+      │ <span class="warn">소통 단절</span>   │         └────────────────┘
+      └──────────┘
+             │
+      운영 의원 (연매출 ~80억)
+      대표원장 술기 의존 구조</pre>
+      </div>
+
+      <div class="sub-section">
+        <h4>0-3. 핵심 타임라인</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>시점</th><th>사건</th><th>고객 영향</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>2016</td><td>위너스앤파트너스 설립, 자동차 임대사업</td><td>사업 기반 확보</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>2020.11</td><td>DRC Global Ltd. 설립, DRC 코인원 상장</td><td>~150억 규모 엑싯 경험</td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>2021</td><td>옥수동 362-5 건물 매입 (27억)</td><td>자산 확보</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>2023</td><td>몬스터앤파트너스 설립, MSO 사업 시작</td><td>새 사업 진출</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>2024.04</td><td>DRC 코인원 유의종목 지정</td><td>코인 가치 사실상 소멸</td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>2024.06</td><td>DRC 코인원 상장폐지 + 퓨리에버 공판 DRC 언급</td><td>토큰 유동성 완전 소멸 + 법적 리스크</td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>현재</td><td>박희선 원장 소통 단절, 위너스 폐업 준비</td><td>두 법인 모두 교착</td><td><span class="tag-caution">&#9888;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>0-4. 핵심 수치</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>항목</th><th class="text-end">수치</th><th>의미</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>몬스터 지분</td><td class="text-end">50 : 50</td><td>의사결정 교착(deadlock) 구조</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>운영의원 연 매출</td><td class="text-end">~80억</td><td>수익성 자체는 양호</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>옥수동 건물 매입가</td><td class="text-end">27억</td><td>2021년 매입</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>건물 매각 목표</td><td class="text-end">33억</td><td>+6억 목표</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>DRC 엑싯 규모</td><td class="text-end">~150억</td><td>과거 유동성, 현재 가치 소멸</td><td><span class="tag-caution">&#9888;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>0-5. 지금 가장 중요한 판단</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th style="width:35%;">질문</th><th>판단</th></tr></thead>
+            <tbody>
+              <tr><td><strong>지금 싸워야 하는가?</strong></td><td>아직 아님. 자료 확보와 법률 자문이 먼저. 싸움 전에 협상 카드를 정리해야 한다</td></tr>
+              <tr><td><strong>협상해야 하는가?</strong></td><td><span class="tag-verified">예.</span> 50:50 교착을 푸는 것이 최우선. 지분 매각/매수/역할 재정의 중 택1</td></tr>
+              <tr><td><strong>기다려야 하는가?</strong></td><td><span class="tag-unverified">아니오.</span> 위너스는 보유할수록 금융비용+관리비용이 쌓인다. 최단 경로 매각 후 청산</td></tr>
+              <tr><td><strong>바로 확보해야 할 자료</strong></td><td>두 법인 정관, 주주간계약서(있다면), 등기부등본, 최근 3년 재무제표, 의원-법인 간 계약서 원본</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 1 ==================== -->
+<div class="part-card" id="part1">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part1body">
+    <span class="badge-num">1</span> 팩트 검증
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part1body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>1-1. 확인된 사실</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>사실</th><th>근거</th><th>출처</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>DRC 코인 2020.12 코인원 상장</td><td>코인원 상장 기록</td><td><a href="https://www.nbntv.kr/news/articleView.html?idxno=233351" target="_blank">NBN TV</a></td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>DRC 2024.04.09 유의종목 지정</td><td>코인원 공지</td><td><a href="https://bloomingbit.io/feed/news/66110" target="_blank">블루밍비트</a></td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>DRC 2024.06.25 상장폐지</td><td>거래지원 종료 공지</td><td><a href="https://coinone.co.kr/info/notice/3105" target="_blank">코인원</a></td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>상장폐지 사유: 사업 정상 운영 미확인, 재단 분배율 불일치, 신뢰성 상실</td><td>코인원 공지 원문</td><td><a href="https://coinone.co.kr/info/notice/3105" target="_blank">코인원</a></td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>퓨리에버 공판에서 DRC의 MM/자전거래 언급</td><td>법정 증언 보도</td><td><a href="https://www.digitalasset.works/news/articleView.html?idxno=10845" target="_blank">디지털애셋</a></td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>몬스터앤파트너스: MSO 메디컬 경영지원 회사 (채용공고 확인)</td><td>잡코리아</td><td><a href="https://www.jobkorea.co.kr/Recruit/GI_Read/46691009" target="_blank">잡코리아</a></td><td><span class="tag-verified">&#10003;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>1-2. 고객 진술 기반 정보</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>고객 진술</th><th>확인 필요</th><th>전략적 의미</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>초기 투자금 대부분 임용균 출자</td><td><span class="tag-verified">&#10003;</span> 입금 내역 필요</td><td>지분 협상 시 핵심 레버리지</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>총괄실장 등 핵심멤버가 임용균 지인</td><td>인사기록 확인 가능</td><td>조직 내 실질 영향력 근거</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>의원&rarr;법인으로 매출 이전 구조</td><td><span class="tag-verified">&#10003;</span> 계약서 필수</td><td>MSO 합법성 판단의 핵심</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>법인 이익잉여금 쌓이나 현금 인출 불가</td><td><span class="tag-verified">&#10003;</span> 재무제표 필요</td><td>수익 회수 구조 재설계 출발점</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>DRC 엑싯 ~150억</td><td class="risk-high">&#10007; 매우 중요</td><td>세무/법적 리스크 산정 기준</td><td><span class="tag-caution">&#9888;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>1-3. 외부 리서치와 충돌하는 정보</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>항목</th><th>고객 진술</th><th>외부 자료</th><th>해석</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>DRC 엑싯 규모</td><td>~150억</td><td>코인원에서만 거래, 상장폐지, "재단 분배율 불일치"</td><td>150억이 개인 현금화인지, 법인인지, 시총 기준인지 확인 필요</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>DRC 사업</td><td>모빌리티 블록체인</td><td>퓨리에버 공판에서 MM/자전거래로 언급</td><td>직접 피의자 아니나, 잠재 리스크</td><td><span class="tag-caution">&#9888;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>1-4. 아직 비어 있는 핵심 정보</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>필요한 정보</th><th>왜 중요한가</th><th>확보 방법</th><th>우선순위</th></tr></thead>
+            <tbody>
+              <tr class="table-danger"><td>몬스터 정관 + 주주간계약서</td><td>50:50 교착 해결의 법적 근거</td><td>고객 보유 자료</td><td><strong>최우선</strong></td></tr>
+              <tr class="table-danger"><td>의원-법인 간 용역계약서 원본</td><td>MSO 합법성, 수익 배분 구조</td><td>고객 보유 자료</td><td><strong>최우선</strong></td></tr>
+              <tr class="table-danger"><td>두 법인 최근 3년 재무제표</td><td>잉여금, 부채, 현금흐름</td><td>고객 보유 / DART</td><td><strong>최우선</strong></td></tr>
+              <tr class="table-danger"><td>DRC 150억 엑싯의 실체</td><td>현금화 여부, 세금 신고 여부</td><td>고객 확인 + 세무기록</td><td><strong>최우선</strong></td></tr>
+              <tr class="table-warning"><td>옥수동 건물 등기부등본</td><td>근저당, 채권자, 부채 규모</td><td>인터넷등기소</td><td>높음</td></tr>
+              <tr class="table-warning"><td>박희선 원장의 현재 입장</td><td>협상 전략 수립의 전제</td><td>간접 확인 / 직접 대화</td><td>높음</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 2 ==================== -->
+<div class="part-card" id="part2">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part2body">
+    <span class="badge-num">2</span> 법률/계약 관점 &mdash; "계약서에 뭐가 적혀 있느냐가 판을 바꾼다"
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part2body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>2-1. 몬스터앤파트너스 &mdash; 핵심 쟁점</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>쟁점</th><th>고객에게 유리</th><th>상대방에게 유리</th><th>확인 자료</th></tr></thead>
+            <tbody>
+              <tr><td>50:50 의사결정권</td><td>초기 투자금 대부분 출자 &rarr; 경영 기여도 주장</td><td>등기상 동등 지분 &rarr; 동등 권리</td><td>출자 증빙, 정관</td></tr>
+              <tr><td>MSO-의원 용역계약</td><td>적정 수수료면 합법적 배분</td><td>과도한 수수료면 사무장병원 의심</td><td>용역계약서 원본</td></tr>
+              <tr><td>이익잉여금 배당</td><td>주주로서 배당 청구권 보유</td><td>50:50이므로 상대 동의 없이 결의 불가</td><td>정관, 주총 의사록</td></tr>
+              <tr><td>대표원장 술기 의존</td><td>원장 이탈 시 사업 급락 &rarr; 원장에게도 리스크</td><td>원장 없이 운영 불가 &rarr; 원장 우위</td><td>봉직의 현황, 매출 구조</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>2-2. 위너스앤파트너스 &mdash; 핵심 쟁점</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>쟁점</th><th>현재 상태</th><th>리스크</th><th>확인 자료</th></tr></thead>
+            <tbody>
+              <tr><td>DRC 토큰 세무</td><td>150억 엑싯 주장</td><td class="risk-high">법인세 미신고 시 가산세, 조세포탈</td><td>세무신고 내역</td></tr>
+              <tr><td>DRC 상장폐지 &amp; 퓨리에버</td><td>상장폐지 완료</td><td class="risk-mid">수사 확대 시 법적 리스크</td><td>수사 진행 여부</td></tr>
+              <tr><td>옥수동 건물 근저당</td><td>은행 이자 상승</td><td>매각가 &lt; 근저당+채무 시 손실</td><td>등기부등본, 대출 잔액</td></tr>
+              <tr><td>임차인 미납/공실</td><td>운영 손실 지속</td><td>명도소송 시 매각 지연</td><td>임대차계약서</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>2-3. 조항 유무에 따른 전략 차이</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>쟁점</th><th>조항 있음</th><th>조항 없음</th><th>전략적 의미</th></tr></thead>
+            <tbody>
+              <tr><td>주주간계약서 (몬스터)</td><td>교착 해결 메커니즘 활용</td><td>상법 일반 규정만, 해결 장기화</td><td>없을 가능성 높음 &rarr; 지금이라도 서면화 필수</td></tr>
+              <tr><td>배당 정책</td><td>정관 기준 청구 가능</td><td>주총 특별결의 필요 &rarr; 교착</td><td>정관 확인 최우선</td></tr>
+              <tr><td>경업금지/비밀유지</td><td>원장 이탈 시 제한</td><td>원장 자유 개원 &rarr; 레버리지 약화</td><td>없다면 협상 시 포함</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>2-4. 법적 리스크 종합</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>리스크</th><th>대상</th><th>가능성</th><th>영향도</th><th>대응</th></tr></thead>
+            <tbody>
+              <tr><td>사무장병원 혐의</td><td>몬스터</td><td class="risk-mid">중</td><td class="risk-high">극심</td><td>MSO-의원 계약 실질성 확인, 의료법 변호사 자문</td></tr>
+              <tr><td>50:50 경영 마비</td><td>몬스터</td><td class="risk-high">높음</td><td class="risk-high">높음</td><td>주주간계약 체결 또는 지분 조정</td></tr>
+              <tr><td>DRC 수사 확대</td><td>위너스</td><td class="risk-low">낮~중</td><td class="risk-high">높음(형사)</td><td>퓨리에버 사건 모니터링, 변호사 사전 상담</td></tr>
+              <tr><td>토큰 세무 리스크</td><td>위너스/DRC Global</td><td class="risk-mid">중</td><td class="risk-high">높음</td><td>세무사 즉시 자문, 수정신고 검토</td></tr>
+              <tr><td>건물 매각 손실</td><td>위너스</td><td class="risk-mid">중</td><td class="risk-mid">중</td><td>시세 재평가, 조기 매각</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 3 ==================== -->
+<div class="part-card" id="part3">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part3body">
+    <span class="badge-num">3</span> 재무 관점 &mdash; "숫자가 말하는 진짜 힘의 균형"
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part3body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>3-1. 핵심 재무 구조</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>항목</th><th>몬스터앤파트너스</th><th>위너스앤파트너스</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>연 매출</td><td>~80억 (의원 기준)</td><td>미확인 (실사업 쇠퇴)</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>순이익</td><td>"양호" (수치 미확인)</td><td>적자 추정</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>이익잉여금</td><td>쌓이는 중</td><td>미확인</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>주요 자산</td><td>MSO 용역 수익권</td><td>옥수동 건물, 차량 8대</td><td><span class="tag-caution">&#9888;</span></td></tr>
+              <tr><td>지분</td><td>50:50</td><td>100% 임용균</td><td><span class="tag-caution">&#9888;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>3-2. 몬스터 수익 회수 시나리오</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>방법</th><th>세율/비용</th><th>실현 가능성</th><th>리스크</th></tr></thead>
+            <tbody>
+              <tr><td>배당</td><td>15.4% ~ 종합과세 49.5%</td><td>낮음 (교착)</td><td>상대방 동의 필요</td></tr>
+              <tr><td>급여/상여</td><td>근로소득세 6~45%</td><td>중간</td><td>과다 급여 세무 리스크</td></tr>
+              <tr><td>MSO 수수료 조정</td><td>법인세 + 소득세</td><td>중간</td><td>부당행위계산부인</td></tr>
+              <tr><td>지분 매각</td><td>양도소득세</td><td>중~높음</td><td>매수자 확보 + 가치 산정</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>3-3. 위너스 건물 매각 시나리오 <span class="tag-caution">(범위 추정치 &mdash; 근저당 15~20억 가정)</span></h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>시나리오</th><th class="text-end">매각가</th><th class="text-end">상환 후 잔여</th><th>비고</th></tr></thead>
+            <tbody>
+              <tr class="table-success"><td>낙관</td><td class="text-end">33억</td><td class="text-end">13~18억</td><td>법인세 후 확인 필요</td></tr>
+              <tr class="table-warning"><td>중간</td><td class="text-end">28~30억</td><td class="text-end">8~15억</td><td>시세 반영</td></tr>
+              <tr class="table-danger"><td>비관</td><td class="text-end">25억 이하</td><td class="text-end">5~10억</td><td>경기 악화 시</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>3-4. 박희선 원장의 재무적 압박 포인트</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>압박 요인</th><th>근거</th><th>고객 활용법</th></tr></thead>
+            <tbody>
+              <tr><td>대표원장 노동력 의존</td><td>시스템화 실패, 봉직의 마찰</td><td>번아웃/이탈 리스크를 협상 카드로</td></tr>
+              <tr><td>이익잉여금 잠김</td><td>배당 미실행 시 원장도 회수 불가</td><td>"함께 잠긴 돈" &rarr; 배당 합의 유인</td></tr>
+              <tr><td>MSO 없이 운영 복잡</td><td>MSO가 경영지원 담당</td><td>MSO 중단 시 원장도 타격</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 4 ==================== -->
+<div class="part-card" id="part4">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part4body">
+    <span class="badge-num">4</span> 시간 관점 &mdash; "시계는 누구 편인가"
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part4body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>4-1. 핵심 데드라인</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>데드라인</th><th>시점</th><th>유리한 쪽</th><th>이유</th></tr></thead>
+            <tbody>
+              <tr><td>위너스 금융비용 누적</td><td>매월</td><td class="risk-high">고객 불리</td><td>이자+관리비+공실 손실 지속</td></tr>
+              <tr><td>몬스터 배당/결산</td><td>연 1회</td><td>정기주총 전 협상 유리</td><td>배당 안건 상정 가능 시점</td></tr>
+              <tr><td>DRC 수사 동향</td><td>불확실</td><td class="risk-high">리스크 누적</td><td>퓨리에버 사건 파급 가능</td></tr>
+              <tr><td>MSO 규제 강화</td><td>지속적</td><td class="risk-high">고객 불리</td><td>복지부 현지조사 강화 중</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>4-2. 시간에 따른 협상력 변화</h4>
+        <pre class="diagram">고객 협상력
+높음 |  <span class="hl">★현재</span>
+     |   \
+     |    \___몬스터 (원장 의존 심화 → 고객 레버리지 약화)
+     |         \____
+     |
+     |  <span class="hl">★현재</span>
+     |   \
+     |    \___위너스 (금융비용 누적 → 자산 가치 잠식)
+     |         \____
+낮음 |________________________
+      현재    6개월    12개월
+
+<span class="warn">결론: 두 법인 모두 시간은 고객 편이 아니다. 지금이 가장 협상력이 높은 시점.</span></pre>
+      </div>
+
+      <div class="sub-section">
+        <h4>4-3. 지금 행동 vs 기다리기</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>선택</th><th>장점</th><th>단점</th><th>추천</th></tr></thead>
+            <tbody>
+              <tr><td>즉시 행동 (위너스 매각+폐업)</td><td>손실 최소화</td><td>급매 시 가격 하락</td><td><span class="badge bg-success">강력 추천</span></td></tr>
+              <tr><td>기다리기 (위너스)</td><td>시세 회복 기대</td><td>매월 손실 누적</td><td><span class="badge bg-danger">비추천</span></td></tr>
+              <tr><td>즉시 행동 (몬스터 지분 협상)</td><td>매출 양호할 때 = 가치 높을 때</td><td>감정적 충돌 가능</td><td><span class="badge bg-primary">추천 (자료 확보 후)</span></td></tr>
+              <tr><td>기다리기 (몬스터)</td><td>소통 회복 기대</td><td>원장 구조화 → 영향력 축소</td><td><span class="badge bg-danger">비추천</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 5 ==================== -->
+<div class="part-card" id="part5">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part5body">
+    <span class="badge-num">5</span> 게임이론 관점 &mdash; "상대가 뭘 해도 내가 손해 보지 않는 구조"
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part5body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>5-1. 박희선 원장의 선택지</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>선택</th><th>가능성</th><th>목적</th><th>고객 대응</th></tr></thead>
+            <tbody>
+              <tr><td>현상 유지 (소통 거부)</td><td class="risk-high">높음</td><td>경영 독립, 고객 배제</td><td>법률 대리인 통한 공식 서면 전환</td></tr>
+              <tr><td>고객 지분 매수 제안</td><td class="risk-mid">중간</td><td>100% 지배권</td><td>적정 가치 산정 후 협상</td></tr>
+              <tr><td>별도 의원 개원</td><td>낮~중</td><td>MSO 의존 탈피</td><td>경업금지 조항 확인</td></tr>
+              <tr><td>MSO 계약 해지 요구</td><td>낮음</td><td>비용 절감</td><td>MSO 없이 운영 가능한지 검토</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>5-2. 고객의 선택지</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>선택</th><th>장점</th><th>리스크</th><th>적합한 상황</th></tr></thead>
+            <tbody>
+              <tr><td>A. 지분 매각 (원장에게)</td><td>깔끔한 엑싯, 현금</td><td>헐값 매각</td><td>관계 회복 불가 시</td></tr>
+              <tr><td>B. 지분 매수 (원장 지분)</td><td>100% 지배권</td><td>원장 이탈 &rarr; 가치 급락</td><td>후임 원장 확보 시</td></tr>
+              <tr><td>C. 배당 합의 + 역할 재정의</td><td>관계 유지 + 수익 회수</td><td>합의 어려움</td><td>대화 재개 가능 시</td></tr>
+              <tr><td>D. 법적 조치</td><td>법적 권리 행사</td><td>관계 파탄, 장기화</td><td>최후 수단</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>5-3. 2&times;2 전략 매트릭스</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered text-center">
+            <thead><tr><th></th><th>원장 협조</th><th>원장 비협조</th></tr></thead>
+            <tbody>
+              <tr><td class="fw-bold">고객 강경</td><td>빠른 합의 가능</td><td class="table-danger">장기 법적 분쟁, 가치 훼손</td></tr>
+              <tr><td class="fw-bold">고객 협상</td><td class="table-success"><strong>최적: 배당 합의 + 구조 재설계</strong></td><td class="table-warning">시간 소모, 상대 입지 강화</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="conclusion-box mt-3">
+          <strong>최적 전략:</strong> "협상 우선, 법적 카드는 보여주되 사용하지 않는다"
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>5-4. 최적 전략 경로</h4>
+        <pre class="diagram"><span class="hl">1단계: 자료 확보</span> (1~2주)
+   │  정관, 재무제표, 용역계약서, 등기부등본
+   ↓
+<span class="hl">2단계: 법률/세무 자문</span> (2~3주)
+   │  의료법 전문 변호사 + 세무사
+   │  MSO 합법성 점검, 지분 가치 산정
+   ↓
+<span class="hl">3단계: 비공개 협상안 제시</span> (3~4주)
+   │  법률 대리인 통해 공식 서면 제안
+   │  Option A: 지분 매각  /  B: 배당 합의  /  C: 지분 매수
+   ↓
+<span class="hl">4단계: 데드라인 부여</span> (4~6주)
+   │  "○월 ○일까지 응답 없으면 법적 절차 개시"
+   ↓
+<span class="hl">5단계: 법적/재무 카드 선택적 사용</span> (6주~)
+   └─ 장부열람청구권, 배당청구, 임시주총 소집</pre>
+      </div>
+
+      <div class="sub-section">
+        <h4>5-5. 핵 옵션과 신뢰도</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>핵 옵션</th><th>효과</th><th>리스크</th><th>사용 가능성</th><th>추천</th></tr></thead>
+            <tbody>
+              <tr><td>사무장병원 신고</td><td>상대 치명타</td><td class="risk-high">고객도 연루 &rarr; 자폭</td><td>5%</td><td><span class="badge bg-danger">절대 금지</span></td></tr>
+              <tr><td>MSO 운영 중단</td><td>상대 압박</td><td class="risk-high">고객도 50% 피해</td><td>20%</td><td><span class="badge bg-warning text-dark">최후 수단</span></td></tr>
+              <tr><td>장부열람/검사인 선임</td><td>투명성 확보</td><td>관계 악화</td><td>60%</td><td><span class="badge bg-success">유효</span></td></tr>
+              <tr><td>임시주총 소집 청구</td><td>배당 안건 상정</td><td>50:50 결의 어려움</td><td>40%</td><td><span class="badge bg-secondary">카드로만</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 6 ==================== -->
+<div class="part-card" id="part6">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part6body">
+    <span class="badge-num">6</span> 외부환경/여론 관점
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part6body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>6-1. MSO 규제 환경</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>항목</th><th>현재 상태</th><th>불리한 점</th><th>검증</th></tr></thead>
+            <tbody>
+              <tr><td>복지부 MSO 현지조사 강화</td><td>2023~ 집중 단속 중</td><td>MSO-의원 자금흐름 조사 시 리스크</td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>1인1개소법 강화</td><td>복수개설 금지 엄격 적용</td><td>네트워크 병원 확장 제한</td><td><span class="tag-verified">&#10003;</span></td></tr>
+              <tr><td>가상자산 규제</td><td>가상자산법 시행, 과세 2027 예정</td><td>법인은 이미 과세 대상</td><td><span class="tag-verified">&#10003;</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>6-2. 유사 분쟁 사례</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>사례</th><th>유사점</th><th>차이점</th><th>시사점</th></tr></thead>
+            <tbody>
+              <tr><td>네트워크 치과 MSO 분쟁</td><td>MSO+의원, 공동창업자 갈등</td><td>치과 vs 일반 병의원</td><td>계약서 실질성이 방어의 핵심</td></tr>
+              <tr><td>퓨리에버 코인 사건</td><td>코인 발행 후 상장폐지</td><td>DRC는 직접 피의자 아님</td><td>간접 연루 대비 필요</td></tr>
+              <tr><td>50:50 동업 분쟁 일반</td><td>의사결정 교착</td><td>의료 분야 특수성</td><td>Russian Roulette 조항 부재 시 극히 어려움</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>6-3. 외부 이해관계자 영향력 맵</h4>
+        <pre class="diagram">        영향력 높음
+            │
+  <span class="warn">보건복지부</span>  │  <span class="hl">박희선 원장</span>
+  (MSO 규제)  │  (사업 운영의 핵심)
+            │
+────────────┼────────────
+            │
+  DRC 투자자  │  코인원/금감원
+  (이미 엑싯)  │  (DRC 이미 상폐)
+            │
+        영향력 낮음
+
+     관심 낮음        관심 높음</pre>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 7 ==================== -->
+<div class="part-card" id="part7">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part7body">
+    <span class="badge-num">7</span> 심리/관계 관점 &mdash; "사람을 읽어야 판이 보인다"
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part7body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>7-1. 박희선 원장의 인센티브 (행동 기반 가설)</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>얻고 싶은 것</th><th>피하고 싶은 것</th><th>고객의 대응</th></tr></thead>
+            <tbody>
+              <tr><td>경영 독립성, 수익 통제권, 간섭 배제</td><td>사무장병원 의혹, MSO 법적 리스크, 노동 강도 증가</td><td>"독립 욕구" 인정하되 "배당은 별개"로 분리 협상</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>7-2. 원장의 약점 가설</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>약점 가설</th><th>근거</th><th>확인 방법</th><th>협상 활용법</th></tr></thead>
+            <tbody>
+              <tr><td>MSO 경영지원 대체 어려움</td><td>MSO가 마케팅/인사/재무 담당</td><td>서비스 목록 확인</td><td>"전환 비용"을 협상 테이블에</td></tr>
+              <tr><td>50%로 단독 결정 불가</td><td>정관상 주총 결의 요건</td><td>정관 확인</td><td>고객도 같은 교착이나 "정리 의지" 쪽이 유리</td></tr>
+              <tr><td>번아웃 리스크</td><td>술기 의존 = 노동 집약</td><td>간접 확인</td><td>원장도 "출구" 필요 &rarr; 우호적 제안</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>7-3. 고객 본인의 감정 리스크</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>감정 리스크</th><th>발생 상황</th><th><span class="risk-high">잘못된 행동</span></th><th><span class="tag-verified">대체 행동</span></th></tr></thead>
+            <tbody>
+              <tr><td>분노</td><td>투자금 회수 불가, 소통 단절</td><td>감정적 대응, 공개 분쟁</td><td>법률 대리인 통한 냉정한 서면</td></tr>
+              <tr><td>조급함</td><td>위너스 매월 손실</td><td>급매 헐값 처분</td><td>하한선 설정 후 조기 매각</td></tr>
+              <tr><td>과신</td><td>DRC 150억 엑싯 기억</td><td>리스크 과소평가</td><td>DRC 세무/법적 리스크 즉시 점검</td></tr>
+              <tr><td>동시 다발 스트레스</td><td>두 법인 이슈 동시</td><td>우선순위 혼란</td><td>위너스 먼저, 몬스터 그 다음</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 8 ==================== -->
+<div class="part-card" id="part8">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part8body">
+    <span class="badge-num">8</span> BATNA 분석
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part8body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>8-1. 고객의 BATNA &mdash; 몬스터앤파트너스</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>대안</th><th>비용</th><th>시간</th><th>성공 가능성</th><th>영향</th></tr></thead>
+            <tbody>
+              <tr><td>A. 지분 매각 (원장에게)</td><td>법률/세무</td><td>3~6개월</td><td>60%</td><td>깔끔한 엑싯</td></tr>
+              <tr><td>B. 장부열람 + 배당 소송</td><td>수천만~1억+</td><td>1~2년</td><td>50%</td><td>법적 압박</td></tr>
+              <tr><td>C. 제3자 지분 매각</td><td>법률/세무</td><td>6개월~1년</td><td>30%</td><td>매수자 확보 어려움</td></tr>
+              <tr><td class="table-danger">D. 현상 유지</td><td>매월 기회비용</td><td>무기한</td><td>&mdash;</td><td class="risk-high">최악: 레버리지 약화</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>8-2. 누가 더 절실한가</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered text-center">
+            <thead><tr><th>항목</th><th>고객</th><th>원장</th><th>우위</th></tr></thead>
+            <tbody>
+              <tr><td>시간</td><td>위너스 손실로 조급</td><td>현상 유지 가능</td><td><span class="badge bg-danger">원장</span></td></tr>
+              <tr><td>돈</td><td>잉여금 잠김 + 위너스 손실</td><td>잉여금 잠김 + 술기 수입</td><td><span class="badge bg-warning text-dark">원장 약간</span></td></tr>
+              <tr><td>평판</td><td>MSO 대표 리스크</td><td>대표원장 리스크</td><td><span class="badge bg-secondary">동등</span></td></tr>
+              <tr><td>법적 리스크</td><td>공동 리스크</td><td>공동 리스크</td><td><span class="badge bg-secondary">동등</span></td></tr>
+              <tr><td>대안</td><td>지분 매각/법적 조치 가능</td><td>별도 개원 어려움</td><td><span class="badge bg-primary">고객 약간</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 9 ==================== -->
+<div class="part-card" id="part9">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part9body">
+    <span class="badge-num">9</span> 레버리지 인벤토리
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part9body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>9-1. 고객이 가진 카드</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>유형</th><th>내용</th><th>상대 인지</th><th>사용 시점</th></tr></thead>
+            <tbody>
+              <tr><td><span class="badge bg-secondary">공개</span></td><td>50% 지분 (동등 의사결정권)</td><td>예</td><td>항상</td></tr>
+              <tr><td><span class="badge bg-secondary">공개</span></td><td>초기 투자금 대부분 출자</td><td>예</td><td>가치 산정 시</td></tr>
+              <tr><td><span class="badge bg-secondary">공개</span></td><td>총괄실장 등 핵심멤버 네트워크</td><td>예</td><td>조직 운영 논의 시</td></tr>
+              <tr><td><span class="badge bg-dark">비밀</span></td><td>법률 대리인 선임 + 법적 조치 준비</td><td>아니오</td><td>협상 결렬 시</td></tr>
+              <tr><td><span class="badge bg-dark">비밀</span></td><td>장부열람청구권/검사인 선임 카드</td><td>아니오</td><td>자료 미제공 시</td></tr>
+              <tr><td><span class="badge bg-info text-dark">잠재</span></td><td>MSO 운영 중단 위협 (자폭 리스크)</td><td>아직 없음</td><td>최후 수단</td></tr>
+              <tr><td><span class="badge bg-info text-dark">잠재</span></td><td>제3자 지분 매각 (원치 않는 주주 유입)</td><td>아직 없음</td><td>협상 압박</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>9-2. 정보 비대칭 맵</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>구분</th><th>내용</th><th>전략적 의미</th></tr></thead>
+            <tbody>
+              <tr><td>고객만 아는 것</td><td>법률 대리인 선임 계획, 법인 정리 의지</td><td>선제적 움직임 가능</td></tr>
+              <tr><td>상대만 아는 것</td><td>원장의 장기 계획, 이익잉여금 정확 규모</td><td>장부열람으로 해소</td></tr>
+              <tr><td class="table-primary">양쪽 다 모르는 것</td><td>MSO 구조의 정확한 법적 리스크 수준</td><td><strong>먼저 확인하면 레버리지</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== PART 10 ==================== -->
+<div class="part-card" id="part10">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#part10body">
+    <span class="badge-num">10</span> 종합 전략
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="part10body" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>10-1. 의사결정 트리</h4>
+        <pre class="diagram">현재 상황
+ │
+ ├─ <span class="hl">[위너스앤파트너스]</span> — 100% 지분, 단독 결정 가능
+ │   ├─ 건물 매각 가능
+ │   │   ├─ 33억 이상 → 즉시 매각 + 채무 상환 + 청산
+ │   │   ├─ 27~33억 → 손익분기 확인 후 매각
+ │   │   └─ 27억 미만 → 그래도 매각 추천 (손실 확대 방지)
+ │   ├─ 차량 8대 처분 → 리스 만료 후 매각/반환
+ │   ├─ <span class="warn">DRC 관련 세무 점검 → 세무사 즉시 자문</span>
+ │   └─ 법인 해산 → 주총 → 청산인 → 채권자 공고 → 잔여재산 분배
+ │
+ └─ <span class="hl">[몬스터앤파트너스]</span> — 50:50, 상대방 협조 필요
+     ├─ 자료 충분
+     │   ├─ 주주간계약서 있음 → 교착 해결 메커니즘 적용
+     │   └─ 주주간계약서 없음
+     │       ├─ 대화 가능 → 배당 합의 + 신규 주주간계약 체결
+     │       └─ 대화 불가 → 법률 대리인 서면 협상
+     │           ├─ 성공 → 지분 매각/매수/배당 합의
+     │           └─ 실패 → 장부열람 → 배당청구 소송
+     └─ 자료 부족
+         ├─ 보유 자료 수집 (1주)
+         ├─ 장부열람청구권 (상법 §466)
+         └─ 검사인 선임 청구 (상법 §467)</pre>
+      </div>
+
+      <div class="sub-section">
+        <h4>10-2. 즉시 행동 체크리스트</h4>
+        <div class="priority-item priority-red"><strong>🔴 1순위</strong> &nbsp; 두 법인 정관/등기부등본/재무제표 수집 &mdash; 모든 전략 판단의 기초</div>
+        <div class="priority-item priority-red"><strong>🔴 1순위</strong> &nbsp; 의료법 전문 변호사 선임 &mdash; MSO 합법성 점검 + 지분 협상 대리</div>
+        <div class="priority-item priority-red"><strong>🔴 1순위</strong> &nbsp; 세무사 상담 (DRC 토큰) &mdash; 150억 엑싯 세무 처리 확인</div>
+        <div class="priority-item priority-yellow"><strong>🟡 2순위</strong> &nbsp; 옥수동 건물 시세 조사 + 매각 착수 &mdash; 금융비용 차단 급선무</div>
+        <div class="priority-item priority-yellow"><strong>🟡 2순위</strong> &nbsp; 위너스 채무 목록 정리 &mdash; 청산 가능 여부 판단</div>
+        <div class="priority-item priority-yellow"><strong>🟡 2순위</strong> &nbsp; 박희선 원장에게 법률 대리인 통한 서면 발송</div>
+        <div class="priority-item priority-green"><strong>🟢 3순위</strong> &nbsp; DRC Global Ltd. 상태 확인 &mdash; 해외법인 청산 필요 여부</div>
+        <div class="priority-item priority-green"><strong>🟢 3순위</strong> &nbsp; 위너스 잔존 차량 처분 계획 수립</div>
+      </div>
+
+      <div class="sub-section">
+        <h4>10-3. 하지 말아야 할 것</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th><i class="bi bi-x-circle text-danger"></i> 금지 행동</th><th>이유</th><th><i class="bi bi-check-circle text-success"></i> 대체 행동</th></tr></thead>
+            <tbody>
+              <tr><td>박희선 원장에게 감정적 연락</td><td>증거로 사용될 수 있음</td><td>법률 대리인 통한 서면만</td></tr>
+              <tr><td>사무장병원 신고/위협</td><td>고객도 공동 대표로 연루 &rarr; 자폭</td><td>MSO 합법성 먼저 방어적 점검</td></tr>
+              <tr><td>위너스 건물 급매 (20억 이하)</td><td>근저당 상환 후 남는 것 없음</td><td>하한선 설정 (최소 근저당+&alpha;)</td></tr>
+              <tr><td>DRC 관련 세무 방치</td><td>자진신고 시 가산세 감면 가능</td><td>세무사 즉시 상담</td></tr>
+              <tr><td>두 법인 동시 전면전</td><td>에너지/자금 분산</td><td>위너스 정리 &rarr; 몬스터 협상 순서</td></tr>
+              <tr><td>MSO 일방적 중단</td><td>고객도 50% 피해</td><td>협상 카드로만 보유</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>10-4. 최종 한 문장</h4>
+        <div class="conclusion-box" style="font-size:1rem;">
+          이 사안의 핵심은 <strong>"50:50 교착 구조에서 수익이 잠긴 MSO"</strong>와 <strong>"손실이 누적되는 부동산 법인"</strong>을 동시에 정리해야 하는 문제이며,
+          고객은 <strong>위너스 자산 매각&rarr;청산을 최우선 실행</strong>하면서 몬스터에 대해서는
+          <strong>자료 확보 &rarr; 법률 자문 &rarr; 서면 협상 &rarr; (필요시) 법적 조치</strong> 순서로 단계적으로 레버리지를 높여가야 한다.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== APPENDIX ==================== -->
+<div class="part-card" id="appendix">
+  <div class="part-card-header" data-bs-toggle="collapse" data-bs-target="#appendixbody" style="background:#334155;">
+    부록
+    <i class="bi bi-chevron-down collapse-icon"></i>
+  </div>
+  <div id="appendixbody" class="collapse show">
+    <div class="part-card-body">
+
+      <div class="sub-section">
+        <h4>A. 용어 사전</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>용어</th><th>설명</th></tr></thead>
+            <tbody>
+              <tr><td>MSO</td><td>Management Service Organization. 병원경영지원회사</td></tr>
+              <tr><td>사무장병원</td><td>비의료인이 의료기관을 실질적으로 개설&middot;운영하는 불법 구조</td></tr>
+              <tr><td>1인1개소법</td><td>의료법 제33조 제8항. 의료인 1인이 2개 이상 의료기관 개설 금지</td></tr>
+              <tr><td>Russian Roulette</td><td>50:50 교착 해결. 일방 가격 제시 &rarr; 상대가 그 가격에 매수 또는 매도 선택</td></tr>
+              <tr><td>Texas Shoot-out</td><td>양측 밀봉 입찰 &rarr; 높은 가격 제시 쪽이 상대 지분 매수</td></tr>
+              <tr><td>BATNA</td><td>Best Alternative To a Negotiated Agreement. 협상 결렬 시 최선의 대안</td></tr>
+              <tr><td>DRC</td><td>DRC Mobility. 위너스앤파트너스 발행 ERC-20 유틸리티 토큰</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>B. 참고 자료 출처</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered" style="font-size:0.8rem;">
+            <thead><tr><th>항목</th><th>출처</th><th>발행일</th><th>신뢰도</th></tr></thead>
+            <tbody>
+              <tr><td>DRC 코인원 상장</td><td><a href="https://www.nbntv.kr/news/articleView.html?idxno=233351" target="_blank">NBN TV</a></td><td>2021.03</td><td>중간</td></tr>
+              <tr><td>DRC 유의종목 지정</td><td><a href="https://bloomingbit.io/feed/news/66110" target="_blank">블루밍비트</a></td><td>2024.04</td><td>중간</td></tr>
+              <tr><td>DRC 거래지원 종료</td><td><a href="https://coinone.co.kr/info/notice/3105" target="_blank">코인원 공지</a></td><td>2024.06</td><td>높음</td></tr>
+              <tr><td>퓨리에버 공판 DRC 언급</td><td><a href="https://www.digitalasset.works/news/articleView.html?idxno=10845" target="_blank">디지털애셋</a></td><td>2024.06</td><td>중간</td></tr>
+              <tr><td>MSO 법적 쟁점</td><td><a href="https://www.medicaltimes.com/Users/News/NewsView.html?ID=1163947" target="_blank">메디칼타임즈</a></td><td>&mdash;</td><td>높음</td></tr>
+              <tr><td>MSO 사무장병원 단속</td><td><a href="https://www.dailymedi.com/news/news_view.php?wr_id=900125" target="_blank">데일리메디</a></td><td>&mdash;</td><td>중간</td></tr>
+              <tr><td>법인 해산/청산 절차</td><td><a href="https://www.help-me.kr/blog/article/%EB%B2%95%EC%9D%B8_%ED%8F%90%EC%97%85%EC%A0%88%EC%B0%A8/" target="_blank">헬프미</a></td><td>&mdash;</td><td>중간</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>C. 검색했지만 확인 못한 정보</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered" style="font-size:0.85rem;">
+            <thead><tr><th>정보</th><th>검색 결과</th><th>상태</th></tr></thead>
+            <tbody>
+              <tr><td>몬스터앤파트너스 DART 공시</td><td>비상장 소규모 법인 추정</td><td><span class="tag-unverified">&#10007; 미확인</span></td></tr>
+              <tr><td>박희선 원장 운영 의원명</td><td>구체적 정보 없음</td><td><span class="tag-unverified">&#10007; 미확인</span></td></tr>
+              <tr><td>옥수동 362-5 건물 시세</td><td>아파트만 확인, 상가/빌딩 미확인</td><td><span class="tag-unverified">&#10007; 미확인</span></td></tr>
+              <tr><td>DRC 150억 엑싯 구체적 경로</td><td>상장 확인, 현금화 규모 미확인</td><td><span class="tag-unverified">&#10007; 미확인</span></td></tr>
+              <tr><td>DRC Global Ltd. 현재 상태</td><td>정보 없음</td><td><span class="tag-unverified">&#10007; 미확인</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>D. 고객에게 추가 질문</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered">
+            <thead><tr><th>#</th><th>질문</th><th>왜 필요한가</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>DRC 150억 엑싯 형태 (토큰/법인 매각? 개인/법인 귀속?) + 세금 신고 여부</td><td>세무 리스크 판단의 핵심</td></tr>
+              <tr><td>2</td><td>몬스터앤파트너스 주주간계약서 존재 여부 + 정관 교착 해결 조항</td><td>50:50 교착 해결의 법적 근거</td></tr>
+              <tr><td>3</td><td>박희선 원장 소통 단절의 구체적 계기 + 원장의 명시적 요구</td><td>협상 전략 수립의 전제</td></tr>
+              <tr><td>4</td><td>옥수동 건물 근저당 잔액, 월 이자, 임차인 현황</td><td>매각 손익과 청산 가능 여부</td></tr>
+              <tr><td>5</td><td>DRC Global Ltd. 현재 상태 + 해외법인 정리 계획</td><td>방치 시 추가 법적/세무 리스크</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h4>E. 면책사항</h4>
+        <p class="text-muted" style="font-size:0.82rem; line-height:1.7;">
+          본 리포트는 공개 자료, 고객 제공 자료, 합리적 추정에 기반한 전략적 의사결정 보조 문서입니다.
+          법률 자문, 세무 자문, 투자 자문을 대체하지 않습니다.
+          계약 체결, 소송, 형사 고소, 투자 실행 등 법적 효과가 발생하는 행위 전에는 관련 전문가의 최종 검토가 필요합니다.
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== KEY FINDINGS ==================== -->
+<div class="mt-4 mb-5">
+  <h5 class="fw-bold mb-3"><i class="bi bi-lightning-charge-fill text-warning"></i> &nbsp;핵심 발견사항 3가지</h5>
+
+  <div class="finding-card red">
+    <strong>1. DRC 코인 법적/세무 리스크가 예상보다 크다.</strong><br>
+    2024년 코인원 상장폐지 사유: "재단 분배율 불일치, 신뢰성 상실". 퓨리에버 공판에서 MM/자전거래로 언급.
+    150억 엑싯의 세무 처리를 즉시 확인해야 한다.
+  </div>
+
+  <div class="finding-card amber">
+    <strong>2. 50:50 구조는 주주간계약 없이 해결 극히 어렵다.</strong><br>
+    배당도, 경영 방향도, 지분 정리도 모두 상대방 동의 필요.
+    MSO 규제 강화 추세에서 사무장병원 혐의 리스크도 점검 필수.
+  </div>
+
+  <div class="finding-card blue">
+    <strong>3. 위너스는 보유할수록 손실 누적 구조다.</strong><br>
+    금융비용 + 공실/미납 + 관리비용이 매월 자산 가치 잠식.
+    100% 지분으로 단독 결정 가능 &mdash; 최단 경로 매각&rarr;청산 실행.
+  </div>
+</div>
+
+</div><!-- /col-lg-9 -->
+</div><!-- /row -->
+</div><!-- /container -->
+
+<footer class="bg-dark text-muted text-center py-3" style="font-size:0.75rem;">
+  Confidential &mdash; 전략 리포트 &mdash; 2026.04.14
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Toggle collapse icon rotation
+  document.querySelectorAll('.part-card-header').forEach(h => {
+    h.addEventListener('click', () => h.classList.toggle('collapsed'));
+  });
+
+  // TOC active state on scroll
+  const tocLinks = document.querySelectorAll('.toc-sidebar a');
+  const sections = [...tocLinks].map(a => document.querySelector(a.getAttribute('href')));
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (s && s.getBoundingClientRect().top < 120) current = s.id; });
+    tocLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + current));
+  });
+</script>
+</body>
+</html>
