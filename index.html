@@ -104,11 +104,15 @@ body {
   background: linear-gradient(135deg, #e8e8f0, #818cf8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .header p {
   color: var(--text-dim);
   font-size: 15px;
   line-height: 1.8;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Steps */
@@ -160,12 +164,16 @@ body {
   font-weight: 700;
   margin-bottom: 6px;
   line-height: 1.5;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .q-subtitle {
   font-size: 13px;
   color: var(--text-muted);
   margin-bottom: 16px;
   line-height: 1.6;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Input styles */
@@ -222,6 +230,8 @@ textarea.input-field {
   cursor: pointer;
   transition: all 0.2s;
   font-size: 14px;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .option:hover {
   border-color: var(--accent);
@@ -332,6 +342,8 @@ textarea.input-field {
   font-size: 12px;
   color: var(--text-muted);
   line-height: 1.8;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 /* Confidential badge */
@@ -504,9 +516,9 @@ textarea.input-field {
 
     <div class="header">
       <div class="badge">PRE-REPORT SURVEY</div>
-      <h1>전략 리포트를 위한<br>사전 인터뷰</h1>
+      <h1>전략 리포트를 위한 사전 인터뷰</h1>
       <p>
-        좋은 리포트는 정확한 맥락에서 시작됩니다.<br>
+        좋은 리포트는 정확한 맥락에서 시작됩니다.
         아래 질문에 답해주시면, 상황에 맞는 전략 리포트를 작성해 드립니다.
       </p>
       <div class="confidential">보안 — 모든 응답은 리포트 작성자에게만 전달됩니다</div>
@@ -554,7 +566,7 @@ textarea.input-field {
       <div class="question">
         <div class="q-number">03</div>
         <div class="q-title">회사에 대해 간단히 알려주세요</div>
-        <div class="q-subtitle">업종, 주요 사업, 설립 시기, 규모 등 — 아는 만큼만 괜찮습니다</div>
+        <div class="q-subtitle">업종, 주요 사업, 설립 시기, 규모 등. 아는 만큼만 괜찮습니다.</div>
         <div class="input-group">
           <textarea class="input-field" id="companyInfo" placeholder="예) 2019년 설립, D2C 이커머스, 연매출 약 200억, 직원 50명"></textarea>
         </div>
@@ -617,8 +629,8 @@ textarea.input-field {
         <div class="q-number">05</div>
         <div class="q-title">상황을 자유롭게 설명해주세요</div>
         <div class="q-subtitle">
-          시간순으로 적어주시면 가장 좋습니다.<br>
-          "이건 말해도 되나?" 싶은 것도 괜찮습니다 — 맥락이 많을수록 리포트가 정확합니다.
+          시간순으로 적어주시면 가장 좋습니다.
+          "이건 말해도 되나?" 싶은 것도 괜찮습니다. 맥락이 많을수록 리포트가 정확합니다.
         </div>
         <div class="input-group">
           <textarea class="input-field" id="situationDetail" style="min-height:180px" placeholder="예) 2022년에 PE로부터 투자를 받았는데, 최근 경영 방향에 대해 의견 충돌이 생겼습니다. 구체적으로는..."></textarea>
@@ -639,7 +651,7 @@ textarea.input-field {
         <div class="q-number">06</div>
         <div class="q-title">관련된 주요 이해관계자가 누구인가요?</div>
         <div class="q-subtitle">
-          상대방 회사, 인물, 투자사, 자문사 등 — 이름을 몰라도 역할만 적어도 됩니다
+          상대방 회사, 인물, 투자사, 자문사 등. 이름을 몰라도 역할만 적어도 됩니다.
         </div>
         <div class="input-group">
           <textarea class="input-field" id="stakeholders" placeholder="예)&#10;- 마이다스PE (투자사, 대표 임OO)&#10;- MMP (매각자문사, 담당 김OO)&#10;- 공동창업자 박OO (CTO)"></textarea>
@@ -660,7 +672,7 @@ textarea.input-field {
       <div class="question">
         <div class="q-number">08</div>
         <div class="q-title">관련 자료가 있나요?</div>
-        <div class="q-subtitle">뉴스 기사, 계약서, 정관, 재무제표, 카톡 캡처 등 — 있으면 분석이 훨씬 정확해집니다</div>
+        <div class="q-subtitle">뉴스 기사, 계약서, 정관, 재무제표, 카톡 캡처 등. 있으면 분석이 훨씬 정확해집니다.</div>
         <div class="options" data-name="materials" data-multi="true">
           <label class="option" onclick="toggleMulti(this)">
             <input type="checkbox" name="materials" value="투자계약서/주주간계약서">
@@ -779,7 +791,7 @@ textarea.input-field {
         <div class="q-number">11</div>
         <div class="q-title">추가로 하고 싶은 말이 있다면</div>
         <div class="q-subtitle">
-          "이건 리포트에 꼭 담아줬으면", "이 부분은 빼줬으면", "이런 톤이 좋겠다" 등 뭐든 괜찮습니다
+          "꼭 담아줬으면 하는 것", "빼줬으면 하는 것", "이런 톤이 좋겠다" 등 뭐든 괜찮습니다.
         </div>
         <div class="input-group">
           <textarea class="input-field" id="additional" placeholder="자유롭게 적어주세요"></textarea>
@@ -791,7 +803,7 @@ textarea.input-field {
       </div>
       <button class="btn-submit" onclick="submitSurvey()">제출하기</button>
       <div class="note">
-        모든 응답은 리포트 작성자에게만 전달됩니다.<br>
+        모든 응답은 리포트 작성자에게만 전달됩니다.
         제출 후 확인되는 대로 연락드리겠습니다.
       </div>
     </div>
@@ -803,7 +815,7 @@ textarea.input-field {
     <div style="font-size:48px;margin-bottom:24px">&#10004;</div>
     <h2>제출 완료</h2>
     <p>
-      응답 내용 확인 후 연락드리겠습니다.<br>
+      응답 내용 확인 후 연락드리겠습니다.
       추가 자료가 있으시면 연락처로 보내주셔도 됩니다.
     </p>
     <p style="margin-top:24px;color:var(--text-muted);font-size:13px">
